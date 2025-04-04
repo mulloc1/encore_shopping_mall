@@ -6,6 +6,7 @@ class Item {
   final int price;
   final String description;
   final String image_path;
+  final int quantity;
 
   Item({
     String? id,
@@ -13,6 +14,7 @@ class Item {
     required this.price,
     required this.description,
     required this.image_path,
+    required this.quantity,
   }) : id = id ?? const Uuid().v4();
 
   Item copyWith({
@@ -20,6 +22,7 @@ class Item {
     int? price,
     String? description,
     String? image_path,
+    int? quantity,
   }) {
     return Item(
       id: id,
@@ -27,6 +30,7 @@ class Item {
       price: price ?? this.price,
       description: description ?? this.description,
       image_path: image_path ?? this.image_path,
+      quantity: quantity ?? this.quantity,
     );
   }
 
