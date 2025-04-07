@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:encore_shopping_mall/providers/cart_provider.dart';
 import 'package:encore_shopping_mall/router.dart';
 import 'package:encore_shopping_mall/utils/logger_provider.dart';
@@ -26,7 +28,13 @@ class CartItemWidget extends ConsumerWidget {
               children: [
                 Row(
                   children: [
-                    Container(width: 80, height: 80, color: Colors.grey),
+                    item.image == null
+                        ? const SizedBox(width: 80, height: 80)
+                        : SizedBox(
+                          child: Image.file(File(item.image!.path)),
+                          width: 80,
+                          height: 80,
+                        ),
                     const SizedBox(width: 16),
                     Expanded(
                       child: Column(
@@ -37,6 +45,7 @@ class CartItemWidget extends ConsumerWidget {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
+                              // 수령 증감 버튼
                               Text('${item.quantity}개'),
                               const SizedBox(width: 10),
                               Text('${item.price * item.quantity} 원'),

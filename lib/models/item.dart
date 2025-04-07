@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:image_picker/image_picker.dart';
 import 'package:uuid/uuid.dart';
 
 class Item {
@@ -7,7 +8,7 @@ class Item {
   final String name;
   final int price;
   final String description;
-  final File image;
+  final XFile? image;
   int quantity = 0;
 
   Item({
@@ -23,7 +24,7 @@ class Item {
     String? name,
     int? price,
     String? description,
-    File? image,
+    XFile? image,
     int? quantity,
   }) {
     return Item(

@@ -6,6 +6,7 @@ import 'package:encore_shopping_mall/router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:image_picker/image_picker.dart';
 
 class ProductCreatePage extends ConsumerStatefulWidget {
   const ProductCreatePage({super.key});
@@ -19,7 +20,7 @@ class _ProductCreatePageState extends ConsumerState<ProductCreatePage> {
   final TextEditingController priceController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
 
-  String? selectedImageUrl;
+  XFile? selectedImage;
 
   /// 필수 항목 모두 입력되었는지 확인
   bool get isFormValid {
@@ -35,11 +36,20 @@ class _ProductCreatePageState extends ConsumerState<ProductCreatePage> {
   }
 
   // 이미지 선택 (Image_picker 사용)
-  void _selectImage() {
+  Future<void> _selectImage() async {
     // 샘플 이미지 URL을 선택한 것으로 처리
-    setState(() {
-      selectedImageUrl = 'https://picsum.photos/200/300';
-    });
+    try {
+      final pickedFile = await ImagePicker().pickImage(
+        source: ImageSource.gallery,
+      );
+      if (pickedFile != null) {
+        setState(() {
+          selectedImage = pickedFile;
+        });
+      }
+    } catch (e) {
+      _showError('이미지 선택 중 오류가 발생했습니다.');
+    }
   }
 
   void _submitForm() {
@@ -59,7 +69,7 @@ class _ProductCreatePageState extends ConsumerState<ProductCreatePage> {
       price: int.parse(priceController.text.trim()),
       description: descriptionController.text.trim(),
       // 선택한 이미지 추가
-      image: File(''),
+      image: selectedImage,
     );
     ref.read(itemListProvider.notifier).addItem(item);
     showDialog(
@@ -69,7 +79,7 @@ class _ProductCreatePageState extends ConsumerState<ProductCreatePage> {
             content: const Text('등록이 완료되었습니다.'),
             actions: [
               TextButton(
-                onPressed: () => context.pop(),
+                onPressed: () => context.go(Routes.home),
                 child: const Text('확인'),
               ),
             ],
@@ -107,7 +117,8 @@ class _ProductCreatePageState extends ConsumerState<ProductCreatePage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               GestureDetector(
-                onTap: () {},
+                onTap: _selectImage,
+                onDoubleTap: null,
                 child: Container(
                   width: double.infinity,
                   height: 180,
@@ -117,9 +128,9 @@ class _ProductCreatePageState extends ConsumerState<ProductCreatePage> {
                   ),
                   child: Center(
                     child:
-                        selectedImageUrl == null
+                        selectedImage == null
                             ? const Text('Image 선택')
-                            : Image.network(selectedImageUrl!),
+                            : Image.file(File(selectedImage!.path)),
                   ),
                 ),
               ),

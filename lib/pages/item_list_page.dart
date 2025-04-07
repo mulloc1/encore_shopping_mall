@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:encore_shopping_mall/router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -27,7 +29,13 @@ class ItemWidget extends ConsumerWidget {
               children: [
                 Row(
                   children: [
-                    Container(width: 80, height: 80, color: Colors.grey),
+                    item.image == null
+                        ? const SizedBox(width: 80, height: 80)
+                        : SizedBox(
+                          child: Image.file(File(item.image!.path)),
+                          width: 80,
+                          height: 80,
+                        ),
                     const SizedBox(width: 16),
                     Expanded(
                       child: Column(
