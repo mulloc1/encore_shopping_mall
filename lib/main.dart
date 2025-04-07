@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:encore_shopping_mall/models/item.dart';
+import 'package:encore_shopping_mall/providers/cart_provider.dart';
 import 'package:encore_shopping_mall/providers/item_list_provider.dart';
 import 'package:encore_shopping_mall/router.dart';
 import 'package:flutter/material.dart';
@@ -17,17 +20,21 @@ class MyApp extends ConsumerWidget {
     if (initialState) {
       return;
     }
-    final itemList = ref.watch(itemListProvider);
+    final itemList = ref.read(itemListProvider);
     for (int i = 0; i < 10; i++) {
       itemList.add(
         Item(
           name: '상품 $i',
           price: 1000,
           description: '상품 $i 설명',
-          image_path: 'https://via.placeholder.com/150',
+          image: File(''),
           quantity: 0,
         ),
       );
+    }
+    final cartList = ref.read(cartProvider);
+    for (int i = 0; i < 10; i += 2) {
+      cartList.add(itemList[i]);
     }
     initialState = true;
   }
@@ -37,6 +44,9 @@ class MyApp extends ConsumerWidget {
     final router = ref.watch(routerProvider);
     makeItemList(ref);
 
-    return MaterialApp.router(routerConfig: router);
+    return MaterialApp.router(
+      routerConfig: router,
+      debugShowCheckedModeBanner: false,
+    );
   }
 }

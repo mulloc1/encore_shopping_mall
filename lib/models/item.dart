@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:uuid/uuid.dart';
 
 class Item {
@@ -5,23 +7,23 @@ class Item {
   final String name;
   final int price;
   final String description;
-  final String image_path;
-  final int quantity;
+  final File image;
+  int quantity = 0;
 
   Item({
     String? id,
     required this.name,
     required this.price,
     required this.description,
-    required this.image_path,
-    required this.quantity,
-  }) : id = id ?? const Uuid().v4();
+    required this.image,
+    this.quantity = 0,
+  }) : id = const Uuid().v4();
 
   Item copyWith({
     String? name,
     int? price,
     String? description,
-    String? image_path,
+    File? image,
     int? quantity,
   }) {
     return Item(
@@ -29,7 +31,7 @@ class Item {
       name: name ?? this.name,
       price: price ?? this.price,
       description: description ?? this.description,
-      image_path: image_path ?? this.image_path,
+      image: image ?? this.image,
       quantity: quantity ?? this.quantity,
     );
   }

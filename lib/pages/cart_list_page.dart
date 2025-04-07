@@ -1,5 +1,6 @@
 import 'package:encore_shopping_mall/providers/cart_provider.dart';
 import 'package:encore_shopping_mall/router.dart';
+import 'package:encore_shopping_mall/utils/logger_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:encore_shopping_mall/models/item.dart';
@@ -12,36 +13,46 @@ class CartItemWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-          child: Column(
-            children: [
-              Row(
-                children: [
-                  Container(width: 80, height: 80, color: Colors.grey),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(item.name),
-                        SizedBox(height: 10),
-                        Align(
-                          alignment: Alignment.centerRight,
-                          child: Text('${item.price} 원'),
-                        ),
-                      ],
+    return GestureDetector(
+      onTap: () {},
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(
+              vertical: 8.0,
+              horizontal: 16.0,
+            ),
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    Container(width: 80, height: 80, color: Colors.grey),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(item.name),
+                          const SizedBox(height: 10),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text('${item.quantity}개'),
+                              const SizedBox(width: 10),
+                              Text('${item.price * item.quantity} 원'),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
-              ),
-            ],
+                  ],
+                ),
+              ],
+            ),
           ),
-        ),
-        Container(height: 1.0, color: Colors.grey),
-      ],
+          Container(height: 1.0, color: Colors.grey),
+        ],
+      ),
     );
   }
 }

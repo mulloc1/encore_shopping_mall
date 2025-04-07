@@ -12,36 +12,44 @@ class ItemWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-          child: Column(
-            children: [
-              Row(
-                children: [
-                  Container(width: 80, height: 80, color: Colors.grey),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(item.name),
-                        SizedBox(height: 10),
-                        Align(
-                          alignment: Alignment.centerRight,
-                          child: Text('${item.price} 원'),
-                        ),
-                      ],
+    return GestureDetector(
+      onTap: () {
+        context.go(Routes.productDetail, extra: item);
+      },
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(
+              vertical: 8.0,
+              horizontal: 16.0,
+            ),
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    Container(width: 80, height: 80, color: Colors.grey),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(item.name),
+                          SizedBox(height: 10),
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: Text('${item.price} 원'),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
-              ),
-            ],
+                  ],
+                ),
+              ],
+            ),
           ),
-        ),
-        Container(height: 1.0, color: Colors.grey),
-      ],
+          Container(height: 1.0, color: Colors.grey),
+        ],
+      ),
     );
   }
 }
@@ -85,6 +93,7 @@ class ItemListPage extends ConsumerWidget {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           // Add item action
+          context.go(Routes.productCreate);
         },
         child: const Icon(Icons.add),
       ),
