@@ -1,8 +1,11 @@
 import 'package:encore_shopping_mall/models/item.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class ItemListNotifier extends StateNotifier<List<Item>> {
-  ItemListNotifier() : super([]);
+class ItemListNotifier extends Notifier<List<Item>> {
+  @override
+  List<Item> build() {
+    return [];
+  }
 
   void addItem(Item item) {
     state = [...state, item];
@@ -23,6 +26,6 @@ class ItemListNotifier extends StateNotifier<List<Item>> {
   }
 }
 
-final itemListProvider = StateNotifierProvider<ItemListNotifier, List<Item>>((ref) {
+final itemListProvider = NotifierProvider<ItemListNotifier, List<Item>>(() {
   return ItemListNotifier();
 });
