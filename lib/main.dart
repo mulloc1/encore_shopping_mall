@@ -23,19 +23,19 @@ class MyApp extends ConsumerWidget {
       return;
     }
     final itemList = ref.read(itemListProvider);
-    for (int i = 0; i < 10; i++) {
+    for (int i = 0; i < 5; i++) {
       itemList.add(
         Item(
           name: '상품 $i',
           price: 1000,
           description: '상품 $i 설명',
-          image: File(''),
+          image: null,
           quantity: 0,
         ),
       );
     }
     final cartList = ref.read(cartProvider);
-    for (int i = 0; i < 10; i += 2) {
+    for (int i = 0; i < itemList.length; i += 2) {
       cartList.add(itemList[i]);
     }
     initialState = true;
@@ -44,7 +44,6 @@ class MyApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final router = ref.watch(routerProvider);
-    makeItemList(ref);
 
     return MaterialApp.router(
       routerConfig: router,

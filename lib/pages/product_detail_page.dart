@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:encore_shopping_mall/models/item.dart';
 import 'package:encore_shopping_mall/providers/cart_provider.dart';
 import 'package:encore_shopping_mall/router.dart';
@@ -98,7 +100,10 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage> {
       body: SafeArea(
         child: Column(
           children: [
-            AspectRatio(aspectRatio: 1.5, child: Text('image')),
+            AspectRatio(
+              aspectRatio: 1.5,
+              child: Image.file(File(item.image!.path)),
+            ),
             Padding(
               padding: const EdgeInsets.all(16),
               child: Column(
