@@ -1,3 +1,4 @@
+
 import 'dart:io';
 
 import 'package:encore_shopping_mall/models/item.dart';
@@ -9,13 +10,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 bool initialState = false;
 
+
 void main() {
   runApp(const ProviderScope(child: MyApp()));
 }
 
 class MyApp extends ConsumerWidget {
   const MyApp({super.key});
-
+  
   void makeItemList(WidgetRef ref) {
     if (initialState) {
       return;
