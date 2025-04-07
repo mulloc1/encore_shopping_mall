@@ -1,22 +1,20 @@
-
+import 'package:encore_shopping_mall/providers/cart_provider.dart';
 import 'package:encore_shopping_mall/router.dart';
+import 'package:encore_shopping_mall/utils/logger_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:encore_shopping_mall/models/item.dart';
-import 'package:encore_shopping_mall/providers/item_list_provider.dart';
 import 'package:go_router/go_router.dart';
 
-class ItemWidget extends ConsumerWidget {
+class CartItemWidget extends ConsumerWidget {
   final Item item;
 
-  const ItemWidget({super.key, required this.item});
+  const CartItemWidget({super.key, required this.item});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return GestureDetector(
-      onTap: () {
-        context.go(Routes.productDetail, extra: item);
-      },
+      onTap: () {},
       child: Column(
         children: [
           Padding(
@@ -35,10 +33,14 @@ class ItemWidget extends ConsumerWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(item.name),
-                          SizedBox(height: 10),
-                          Align(
-                            alignment: Alignment.centerRight,
-                            child: Text('${item.price} 원'),
+                          const SizedBox(height: 10),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text('${item.quantity}개'),
+                              const SizedBox(width: 10),
+                              Text('${item.price * item.quantity} 원'),
+                            ],
                           ),
                         ],
                       ),
@@ -55,15 +57,21 @@ class ItemWidget extends ConsumerWidget {
   }
 }
 
-class ItemListPage extends ConsumerWidget {
-  const ItemListPage({super.key});
+class CartListPage extends ConsumerWidget {
+  const CartListPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final itemList = ref.watch(itemListProvider);
+    final cartList = ref.watch(cartProvider);
 
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          onPressed: () {
+            context.go(Routes.home);
+          },
+          icon: const Icon(Icons.arrow_back),
+        ),
         title: const Text('TITLE'),
         centerTitle: true,
         bottom: PreferredSize(
@@ -73,31 +81,16 @@ class ItemListPage extends ConsumerWidget {
             height: 1.0, // 밑줄의 두께
           ),
         ),
-        actions: [
-          IconButton(
-            onPressed: () {
-              context.go(Routes.cart);
-            },
-            icon: const Icon(Icons.shopping_cart),
-          ),
-        ],
       ),
       body:
-          itemList.isEmpty
-              ? const Center(child: Text('상품이 없습니다.'))
+          cartList.isEmpty
+              ? const Center(child: Text('장바구니가 비었습니다.'))
               : ListView.builder(
-                itemCount: itemList.length,
+                itemCount: cartList.length,
                 itemBuilder: (context, index) {
-                  return ItemWidget(item: itemList[index]);
+                  return CartItemWidget(item: cartList[index]);
                 },
               ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // Add item action
-          context.go(Routes.productCreate);
-        },
-        child: const Icon(Icons.add),
-      ),
     );
   }
 }
