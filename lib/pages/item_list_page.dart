@@ -32,9 +32,9 @@ class ItemWidget extends ConsumerWidget {
                     item.image == null
                         ? const SizedBox(width: 80, height: 80)
                         : SizedBox(
-                          child: Image.file(File(item.image!.path)),
                           width: 80,
                           height: 80,
+                          child: Image.file(File(item.image!.path)),
                         ),
                     const SizedBox(width: 16),
                     Expanded(

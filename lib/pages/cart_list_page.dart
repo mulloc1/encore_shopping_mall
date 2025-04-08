@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:encore_shopping_mall/providers/cart_provider.dart';
 import 'package:encore_shopping_mall/router.dart';
-import 'package:encore_shopping_mall/utils/logger_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:encore_shopping_mall/models/item.dart';
@@ -15,6 +14,8 @@ class CartItemWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final cartNotifier = ref.read(cartProvider.notifier);
+
     return GestureDetector(
       onTap: () {},
       child: Column(
@@ -31,22 +32,58 @@ class CartItemWidget extends ConsumerWidget {
                     item.image == null
                         ? const SizedBox(width: 80, height: 80)
                         : SizedBox(
-                          child: Image.file(File(item.image!.path)),
                           width: 80,
                           height: 80,
+                          child: Image.file(File(item.image!.path)),
                         ),
                     const SizedBox(width: 16),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(item.name),
+                          Row(
+                            children: [
+                              Expanded(child: Text(item.name)),
+                              IconButton(
+                                onPressed: () {
+                                  cartNotifier.removeItem(item);
+                                },
+                                icon: const Icon(Icons.close),
+                              ),
+                            ],
+                          ),
                           const SizedBox(height: 10),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               // 수령 증감 버튼
-                              Text('${item.quantity}개'),
+                              Row(
+                                children: [
+                                  IconButton(
+                                    onPressed: () {
+                                      if (item.quantity > 1) {
+                                        cartNotifier.updateQuantity(
+                                          item.id,
+                                          item.quantity - 1,
+                                        );
+                                      }
+                                    },
+                                    icon: const Icon(Icons.remove),
+                                  ),
+                                  Text('${item.quantity}개'),
+                                  IconButton(
+                                    onPressed: () {
+                                      if (item.quantity < 99) {
+                                        cartNotifier.updateQuantity(
+                                          item.id,
+                                          item.quantity + 1,
+                                        );
+                                      }
+                                    },
+                                    icon: const Icon(Icons.add),
+                                  ),
+                                ],
+                              ),
                               const SizedBox(width: 10),
                               Text('${item.price * item.quantity} 원'),
                             ],
@@ -72,6 +109,10 @@ class CartListPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final cartList = ref.watch(cartProvider);
+    final totalPrice = cartList.fold(
+      0,
+      (sum, item) => sum + (item.price * item.quantity),
+    );
 
     return Scaffold(
       appBar: AppBar(
@@ -94,11 +135,53 @@ class CartListPage extends ConsumerWidget {
       body:
           cartList.isEmpty
               ? const Center(child: Text('장바구니가 비었습니다.'))
-              : ListView.builder(
-                itemCount: cartList.length,
-                itemBuilder: (context, index) {
-                  return CartItemWidget(item: cartList[index]);
-                },
+              : Column(
+                children: [
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: cartList.length,
+                      itemBuilder: (context, index) {
+                        return CartItemWidget(item: cartList[index]);
+                      },
+                    ),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.all(16.0),
+                    color: Colors.grey[300],
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text('총 금액: $totalPrice 원'),
+                        ElevatedButton(
+                          onPressed:
+                              cartList.isEmpty
+                                  ? null
+                                  : () {
+                                    showDialog(
+                                      context: context,
+                                      builder:
+                                          (context) => AlertDialog(
+                                            title: const Text('구매 완료'),
+                                            content: const Text(
+                                              '장바구니의 상품을 구매했습니다.',
+                                            ),
+                                            actions: [
+                                              TextButton(
+                                                onPressed:
+                                                    () =>
+                                                        context.go(Routes.home),
+                                                child: const Text('확인'),
+                                              ),
+                                            ],
+                                          ),
+                                    );
+                                  },
+                          child: const Text('구매하기'),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
     );
   }
