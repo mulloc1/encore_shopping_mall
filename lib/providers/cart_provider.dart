@@ -22,6 +22,16 @@ class CartNotifier extends Notifier<List<Item>> {
   void clearCart() {
     state = [];
   }
+
+  void updateQuantity(String id, int quantity) {
+    state =
+        state
+            .map(
+              (item) =>
+                  item.id == id ? item.copyWith(quantity: quantity) : item,
+            )
+            .toList();
+  }
 }
 
 final cartProvider = NotifierProvider<CartNotifier, List<Item>>(() {
